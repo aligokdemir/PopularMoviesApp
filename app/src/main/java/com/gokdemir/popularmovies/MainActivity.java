@@ -2,8 +2,13 @@ package com.gokdemir.popularmovies;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
@@ -17,18 +22,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView title, releaseDate, posterPath, voteAverage, plotSynopsis;
+    private RecyclerView mRecyclerView;
+    private MoviesAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        title = (TextView) findViewById(R.id.movieTitle);
-        releaseDate = (TextView) findViewById(R.id.releaseDate);
-        posterPath = (TextView) findViewById(R.id.posterPath);
-        voteAverage = (TextView) findViewById(R.id.voteAverage);
-        plotSynopsis = (TextView) findViewById(R.id.plotSynopsis);
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mAdapter = new MoviesAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.MOVIE_DB_URL)
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+
 
         Call<MovieResults> call = retrofitInterface.getMovies(
                 NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR,
@@ -49,14 +55,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
                 MovieResults results = response.body();
                 List<MovieResults.Movie> movieList = results.getResults();
-                MovieResults.Movie movie = movieList.get(0);
 
-                //change these later...
-                title.setText(movie.getTitle());
-                releaseDate.setText(movie.getRelease_date());
-                posterPath.setText(movie.getPoster_path());
-                voteAverage.setText(String.valueOf(movie.getVote_average()));
-                plotSynopsis.setText(movie.getOverview());
+                mAdapter.setmMovieList(movieList);
             }
 
             @Override
@@ -65,5 +65,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
+
+    public static class MovieViewHolder extends RecyclerView.ViewHolder
+    {
+        public ImageView imageView;
+        public MovieViewHolder(View itemView)
+        {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.imageView);
+        }
+    }
+
 }
