@@ -5,12 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.gokdemir.popularmovies.MainActivity;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.R;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,31 +18,38 @@ import java.util.List;
  * Created by gokde on 20.02.2018.
  */
 
-public class MoviesAdapter extends RecyclerView.Adapter<MainActivity.MovieViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>{
     private List<MovieResults.Movie> mMovieList;
     private LayoutInflater mInflater;
     private Context mContext;
+    private final MovieClickListener mMovieClickListener;
 
-    public MoviesAdapter(Context context){
+    public MoviesAdapter(Context context, MovieClickListener mMovieClickListener){
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
+        this.mMovieClickListener = mMovieClickListener;
         this.mMovieList = new ArrayList<>();
+
     }
 
     @Override
-    public MainActivity.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.row_movie, parent, false);
-        MainActivity.MovieViewHolder viewHolder = new MainActivity.MovieViewHolder(view);
+        MovieViewHolder viewHolder = new MovieViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(MainActivity.MovieViewHolder holder, int position) {
+    public void onBindViewHolder(MovieViewHolder holder, int position) {
         MovieResults.Movie movie = mMovieList.get(position);
 
         NetworkUtils.loadImageURL(movie.getPoster_path(), holder.imageView);
 
+    }
+
+    public interface MovieClickListener{
+        void onClick(int position);
     }
 
     @Override
@@ -56,5 +62,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<MainActivity.MovieViewHo
         this.mMovieList.addAll(movieList);
 
         notifyDataSetChanged();
+    }
+
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        public ImageView imageView;
+
+        public MovieViewHolder(View itemView)
+        {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.imageView);
+            itemView.setOnClickListener(this);
+        }
+
+        public void onClick(View view){
+            int clickPosition = getAdapterPosition();
+            mMovieClickListener.onClick(clickPosition);
+        }
     }
 }

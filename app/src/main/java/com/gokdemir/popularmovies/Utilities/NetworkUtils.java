@@ -22,7 +22,9 @@ public class NetworkUtils {
 
     public static final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String MOVIE_POSTER_SIZE_PATH = "w185";
+    public static final String MOVIE_BACKDROP_SIZE_PATH = "w780";
     public static final String MOVIE_POSTER_URL = MOVIE_POSTER_BASE_URL + MOVIE_POSTER_SIZE_PATH;
+    public static final String MOVUE_BACKDROP_URL = MOVIE_POSTER_URL + MOVIE_BACKDROP_SIZE_PATH;
 
     public static final String MOVIE_DB_URL = "http://api.themoviedb.org";
     public static final String MOVIE_PATH = "movie";
@@ -80,6 +82,16 @@ public class NetworkUtils {
                 .load(imageUrl)
                 .noFade()
                 .placeholder(R.mipmap.ic_launcher)
+                .into(imageView);
+    }
+
+    public static void loadBackdropURL(String imagePath, ImageView imageView){
+        String imageUrl = MOVUE_BACKDROP_URL + imagePath;
+
+        Picasso.with(imageView.getContext())
+                .load(imageUrl)
+                .noFade()
+                .placeholder(R.drawable.ic_image_place_holder)
                 .into(imageView);
     }
 

@@ -1,12 +1,16 @@
 package com.gokdemir.popularmovies;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
 import com.gokdemir.popularmovies.Model.MovieResults;
@@ -20,10 +24,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MovieClickListener{
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private MoviesAdapter mAdapter;
+
+    private ProgressDialog progressDialog;
+
+    private Context context = this;
+
+    List<MovieResults.Movie> movieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new MoviesAdapter(this);
+        mAdapter = new MoviesAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        progressDialog = new ProgressDialog(this);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.MOVIE_DB_URL)
@@ -50,13 +63,17 @@ public class MainActivity extends AppCompatActivity {
                 NetworkUtils.LANGUAGE,
                 NetworkUtils.PAGE);
 
+        onLoading();
+
         call.enqueue(new Callback<MovieResults>() {
+
             @Override
             public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
                 MovieResults results = response.body();
-                List<MovieResults.Movie> movieList = results.getResults();
+                movieList = results.getResults();
 
                 mAdapter.setmMovieList(movieList);
+                onFinishedLoading();
             }
 
             @Override
@@ -64,19 +81,52 @@ public class MainActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
-
-
-
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder
-    {
-        public ImageView imageView;
-        public MovieViewHolder(View itemView)
-        {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
+    @Override
+    public void onClick(int position) {
+
+        if(!isOnline()){
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Intent movieDetails = new Intent(this, MovieDetailsActivity.class);
+        movieDetails = intentPutExtra(movieDetails, position);
+        startActivity(movieDetails);
+    }
+
+    public void onLoading() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        if (isOnline()) {
+            progressDialog.setMessage(context.getResources().getString(R.string.being_fecthed_info));
+            progressDialog.show();
+        } else {
+            Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
         }
     }
 
+    public void onFinishedLoading(){
+        mRecyclerView.setVisibility(View.VISIBLE);
+        progressDialog.dismiss();
+    }
+
+    public boolean isOnline(){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
+    }
+
+    public Intent intentPutExtra(Intent movieDetails, int position){
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_title_key),movieList.get(position).getTitle());
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_plot_key), movieList.get(position).getOverview());
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_release_date_key), movieList.get(position).getRelease_date());
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_vote_average_key), movieList.get(position).getVote_average());
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_poster_key), movieList.get(position).getPoster_path());
+        movieDetails.putExtra(context.getResources().getString(R.string.movie_backdrop_key), movieList.get(position).getBackdrop_path());
+
+        return movieDetails;
+    }
 }
