@@ -85,7 +85,7 @@ public class NetworkUtils {
                 .into(imageView);
     }
 
-    public static void loadBackdropURL(String imagePath, ImageView imageView){
+    /*public static void loadBackdropURL(String imagePath, ImageView imageView){
         String imageUrl = MOVUE_BACKDROP_URL + imagePath;
 
         Picasso.with(imageView.getContext())
@@ -93,16 +93,5 @@ public class NetworkUtils {
                 .noFade()
                 .placeholder(R.drawable.ic_image_place_holder)
                 .into(imageView);
-    }
-
-
-
-
-
-
-
-
-
-
-
+    }*/
 }

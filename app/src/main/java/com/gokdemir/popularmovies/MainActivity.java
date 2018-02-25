@@ -1,15 +1,26 @@
 package com.gokdemir.popularmovies;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
@@ -35,57 +46,54 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private Context context = this;
 
     List<MovieResults.Movie> movieList;
+    public boolean isMostPopular = true;
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+    private NavigationView navigationView;
+
+    Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new MoviesAdapter(this, this);
-        mRecyclerView.setAdapter(mAdapter);
+        initializeActivityElements();
 
-        progressDialog = new ProgressDialog(this);
+        retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NetworkUtils.MOVIE_DB_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
-
-
-        Call<MovieResults> call = retrofitInterface.getMovies(
-                NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR,
-                NetworkUtils.TMDB_API_KEY,
-                NetworkUtils.LANGUAGE,
-                NetworkUtils.PAGE);
-
-        onLoading();
-
-        call.enqueue(new Callback<MovieResults>() {
-
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
-                MovieResults results = response.body();
-                movieList = results.getResults();
-
-                mAdapter.setmMovieList(movieList);
-                onFinishedLoading();
-            }
-
-            @Override
-            public void onFailure(Call<MovieResults> call, Throwable t) {
-                t.printStackTrace();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.sortByPopular:
+                        if (!isMostPopular) {
+                            retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR);
+                            isMostPopular = true;
+                        }
+                        return true;
+                    case R.id.sortByTopRated:
+                        if (isMostPopular) {
+                            retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_TOP_RATED);
+                            isMostPopular = false;
+                        }
+                        return true;
+                    default:
+                        return false;
+                }
             }
         });
     }
 
     @Override
-    public void onClick(int position) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)) return true;
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public void onClick(int position) {
         if(!isOnline()){
             mRecyclerView.setVisibility(View.INVISIBLE);
             Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
@@ -94,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         Intent movieDetails = new Intent(this, MovieDetailsActivity.class);
         movieDetails = intentPutExtra(movieDetails, position);
+
         startActivity(movieDetails);
     }
 
@@ -112,6 +121,24 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         progressDialog.dismiss();
     }
 
+    public void initializeActivityElements(){
+        mDrawerLayout = findViewById(R.id.drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = findViewById(R.id.navigation);
+        navigationView.bringToFront();
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mAdapter = new MoviesAdapter(this, this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        progressDialog = new ProgressDialog(this);
+    }
+
     public boolean isOnline(){
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -128,5 +155,38 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         movieDetails.putExtra(context.getResources().getString(R.string.movie_backdrop_key), movieList.get(position).getBackdrop_path());
 
         return movieDetails;
+    }
+
+    public void retrofitCall(String queryType) {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(NetworkUtils.MOVIE_DB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+
+        Call<MovieResults> call = retrofitInterface.getMovies(
+                queryType,
+                NetworkUtils.TMDB_API_KEY,
+                NetworkUtils.LANGUAGE,
+                NetworkUtils.PAGE);
+
+        onLoading();
+
+        call.enqueue(new Callback<MovieResults>() {
+            @Override
+            public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
+                MovieResults results = response.body();
+                movieList = results.getResults();
+
+                mAdapter.setmMovieList(movieList);
+                onFinishedLoading();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }

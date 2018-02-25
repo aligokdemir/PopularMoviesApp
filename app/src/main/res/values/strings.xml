@@ -5,6 +5,18 @@
     <string name="being_fecthed_info">The movies are being fetched...</string>
     <string name="check_internet">Check your internet connection!</string>
 
+    <!--Detail activity strings-->
+    <string name="tv_movie_title">Movie Title:</string>
+    <string name="tv_movie_user_rating">User Rating:</string>
+    <string name="tv_movie_release_date">Release Date:</string>
+    <string name="tv_movie_plot">Movie Plot:</string>
+    <string name="tv_movie_poster">Movie Poster</string>
+    <string name="iv_star_content">Star</string>
+
+    <!--Navigation Drawer-->
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 
     <!--Keys for movie details-->
     <string name="movie_backdrop_key">backdropImage</string>

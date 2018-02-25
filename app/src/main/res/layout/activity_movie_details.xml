@@ -1,6 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
-</android.support.constraint.ConstraintLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="16dp"
+            android:id="@+id/imageViewMoviePoster"
+            android:contentDescription="@string/tv_movie_poster"/>
+
+        <TextView
+            android:id="@+id/textViewTitleExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageViewMoviePoster"
+            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="12dp"
+            android:textColor="#000"
+            android:layout_toRightOf="@+id/imageViewMoviePoster"
+            android:layout_toEndOf="@+id/imageViewMoviePoster"
+            android:text="@string/tv_movie_title" />
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewTitleExp"
+            android:layout_alignStart="@+id/textViewTitleExp"
+            android:layout_below="@+id/textViewTitleExp"
+            android:layout_marginTop="16dp"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/textViewReleaseDateExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:layout_alignLeft="@+id/textViewTitle"
+            android:layout_alignStart="@+id/textViewTitle"
+            android:layout_below="@+id/textViewTitle"
+            android:layout_marginTop="16dp"
+            android:text="@string/tv_movie_release_date" />
+
+        <TextView
+            android:id="@+id/textViewReleaseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewReleaseDateExp"
+            android:layout_alignStart="@+id/textViewReleaseDateExp"
+            android:layout_below="@+id/textViewReleaseDateExp"
+            android:layout_marginTop="16dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textViewUserRatingExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:layout_alignLeft="@+id/textViewReleaseDate"
+            android:layout_alignStart="@+id/textViewReleaseDate"
+            android:layout_below="@+id/textViewReleaseDate"
+            android:layout_marginTop="16dp"
+            android:text="@string/tv_movie_user_rating" />
+
+        <ImageView
+            android:id="@+id/imageViewStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_alignBottom="@+id/imageViewMoviePoster"
+            android:layout_alignLeft="@+id/textViewUserRatingExp"
+            android:layout_alignStart="@+id/textViewUserRatingExp"
+            android:src="@drawable/ic_star_black_24dp"
+            android:contentDescription="@string/iv_star_content"/>
+
+        <TextView
+            android:id="@+id/textViewUserRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageViewStar"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@+id/imageViewStar"
+            android:layout_toRightOf="@+id/imageViewStar"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textViewPlotExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textViewUserRating"
+            android:layout_marginTop="16dp"
+            android:text="@string/tv_movie_plot" />
+
+        <TextView
+            android:id="@+id/textViewPlot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textViewPlotExp"
+            android:layout_marginTop="16dp"
+            android:text="" />
+
+</RelativeLayout>
+
+</ScrollView>

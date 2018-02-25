@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
@@ -20,6 +22,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private Context context;
 
+    double voteAverage;
+
     Intent intent;
 
     @Override
@@ -30,19 +34,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
         context = this;
         intent = getIntent();
 
-        mMovieTitle = findViewById(R.id.textViewTitle);
-        mMovieReleaseDate = findViewById(R.id.textViewReleaseDate);
-        mMovieVoteAverage = findViewById(R.id.textViewVoteAverage);
-        mMovieOverview = findViewById(R.id.textViewOverview);
+        this.setTitle(intent.getExtras().getString(context.getResources().getString(R.string.movie_title_key)));
 
-        mMovieBackdrop = findViewById(R.id.imageViewBackDrop);
-        mMoviePoster = findViewById(R.id.imageViewPoster);
+        mMovieTitle = findViewById(R.id.textViewTitle);
+        mMovieTitle.setMovementMethod(new ScrollingMovementMethod());
+        mMovieReleaseDate = findViewById(R.id.textViewReleaseDate);
+        mMovieVoteAverage = findViewById(R.id.textViewUserRating);
+        mMovieOverview = findViewById(R.id.textViewPlot);
+
+        mMoviePoster = findViewById(R.id.imageViewMoviePoster);
+
+        voteAverage = intent.getDoubleExtra(context.getResources().getString(R.string.movie_vote_average_key), voteAverage);
 
         mMovieTitle.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_title_key)));
-        NetworkUtils.loadBackdropURL(context.getResources().getString(R.string.movie_backdrop_key), mMovieBackdrop);
-        NetworkUtils.loadImageURL(context.getResources().getString(R.string.movie_poster_key), mMoviePoster);
-        mMovieReleaseDate.setText(context.getResources().getString(R.string.movie_release_date_key));
-        mMovieVoteAverage.setText(context.getResources().getString(R.string.movie_vote_average_key));
-        mMovieOverview.setText(context.getResources().getString(R.string.movie_plot_key));
+        NetworkUtils.loadImageURL(intent.getStringExtra(context.getResources().getString(R.string.movie_poster_key)), mMoviePoster);
+        mMovieReleaseDate.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_release_date_key)));
+        mMovieVoteAverage.setText(String.valueOf(voteAverage) + "/10");
+        mMovieOverview.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_plot_key)));
     }
 }

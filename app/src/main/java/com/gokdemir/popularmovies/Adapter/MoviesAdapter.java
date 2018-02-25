@@ -1,6 +1,7 @@
 package com.gokdemir.popularmovies.Adapter;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     private Context mContext;
     private final MovieClickListener mMovieClickListener;
 
+    private static final String TRANSITION_NAME = "moviePosterTransition";
+
     public MoviesAdapter(Context context, MovieClickListener mMovieClickListener){
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
@@ -45,7 +48,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         MovieResults.Movie movie = mMovieList.get(position);
 
         NetworkUtils.loadImageURL(movie.getPoster_path(), holder.imageView);
-
     }
 
     public interface MovieClickListener{
