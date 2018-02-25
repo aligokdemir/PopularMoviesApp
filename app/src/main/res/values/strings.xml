@@ -17,6 +17,12 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
+    <!--Activity Names-->
+    <string name="title_top_rated_activity">Top Rated Movies</string>
+    <string name="title_search_activity">Search For a Movie</string>
+    <string name="title_setting_activity">Settings</string>
+    <string name="title_favorites_activity">My Favorite Movies</string>
+    <string name="title_popular_movies_activity">Popular Movies</string>
 
     <!--Keys for movie details-->
     <string name="movie_backdrop_key">backdropImage</string>

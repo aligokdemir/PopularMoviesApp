@@ -1,5 +1,6 @@
 package com.gokdemir.popularmovies;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mMovieVoteAverage;
     private TextView mMovieOverview;
 
-    private ImageView mMovieBackdrop;
+    //private ImageView mMovieBackdrop; to be used later...
     private ImageView mMoviePoster;
 
     private Context context;

@@ -1,6 +1,7 @@
 package com.gokdemir.popularmovies;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     Retrofit retrofit;
 
+    private Activity mainActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +74,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                         if (!isMostPopular) {
                             retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR);
                             isMostPopular = true;
+                            mainActivity.setTitle(R.string.title_popular_movies_activity);
                         }
                         return true;
                     case R.id.sortByTopRated:
                         if (isMostPopular) {
                             retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_TOP_RATED);
                             isMostPopular = false;
+                            mainActivity.setTitle(R.string.title_top_rated_activity);
                         }
                         return true;
                     default:
@@ -122,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     public void initializeActivityElements(){
+        mainActivity = this;
+
         mDrawerLayout = findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
