@@ -34,8 +34,8 @@ public class NetworkUtils {
     public static final String LANGUAGE = "en-US";
     public static final int PAGE = 1;
 
-    //API key to be used...
-    public static final String TMDB_API_KEY = "2b1455f841eef3c4dd307d7a294fc828";
+    //API key to be used... Insert your API Key Here.
+    public static final String TMDB_API_KEY = "";
 
     @Nullable
     public static URL getPopularMoviesURL(){
