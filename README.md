@@ -13,3 +13,5 @@ While displaying this content, app uses [Retrofit2](http://square.github.io/retr
 3. Search feature for users to look for the movies they like
 4. Collapsing toolbar for a better UI
 5. Implement "favorites" feature that allows users to save movies using SharedPreferences and SQLite
+
+###### To use the application, insert your API KEY inside the NetworkUtils class in the variable called TMDB_API_KEY.
