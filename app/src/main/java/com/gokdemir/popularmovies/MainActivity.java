@@ -28,8 +28,11 @@ import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,22 +42,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MovieClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
-    private MoviesAdapter mAdapter;
+    @BindView(R.id.recyclerView)
+    public  RecyclerView mRecyclerView;
+    @BindView(R.id.navigation)
+    public NavigationView navigationView;
+    @BindView(R.id.drawer)
+    public DrawerLayout mDrawerLayout;
 
     private ProgressDialog progressDialog;
-
+    private MoviesAdapter mAdapter;
     private Context context = this;
-
     List<MovieResults.Movie> movieList;
     public boolean isMostPopular = true;
-
-    private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-    private NavigationView navigationView;
-
     Retrofit retrofit;
-
     private Activity mainActivity;
 
     @Override
@@ -129,16 +130,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     public void initializeActivityElements(){
         mainActivity = this;
 
-        mDrawerLayout = findViewById(R.id.drawer);
+        ButterKnife.bind(this);
+
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        navigationView = findViewById(R.id.navigation);
         navigationView.bringToFront();
 
-        mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mAdapter = new MoviesAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -154,12 +154,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     public Intent intentPutExtra(Intent movieDetails, int position){
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_title_key),movieList.get(position).getTitle());
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_plot_key), movieList.get(position).getOverview());
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_release_date_key), movieList.get(position).getRelease_date());
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_vote_average_key), movieList.get(position).getVote_average());
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_poster_key), movieList.get(position).getPoster_path());
-        movieDetails.putExtra(context.getResources().getString(R.string.movie_backdrop_key), movieList.get(position).getBackdrop_path());
+        MovieResults.Movie movie = new MovieResults.Movie(position, movieList);
+
+        movieDetails.putExtra(getResources().getString(R.string.movie_key), movie);
 
         return movieDetails;
     }

@@ -1,5 +1,9 @@
 package com.gokdemir.popularmovies.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +49,7 @@ public class MovieResults {
         this.results = results;
     }
 
-    public static class Movie {
+    public static class Movie implements Parcelable {
         /**
          * vote_count : 5776
          * id : 211672
@@ -189,5 +193,58 @@ public class MovieResults {
         public void setGenre_ids(List<Integer> genre_ids) {
             this.genre_ids = genre_ids;
         }
+
+        public Movie(int position, List<Movie> movies){
+            this.id = movies.get(position).getId();
+            this.vote_average = movies.get(position).getVote_average();
+            this.title = movies.get(position).getTitle();
+            this.poster_path = movies.get(position).getPoster_path();
+            this.backdrop_path = movies.get(position).getBackdrop_path();
+            this.overview = movies.get(position).getOverview();
+            this.release_date = movies.get(position).getRelease_date();
+            this.video = movies.get(position).isVideo();
+        }
+
+        private Movie(Parcel in){
+            id = in.readInt();
+            vote_average = in.readDouble();
+            title = in.readString();
+            poster_path = in.readString();
+            backdrop_path = in.readString();
+            overview = in.readString();
+            release_date = in.readString();
+            video = Boolean.valueOf(in.readString());
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeInt(id);
+            parcel.writeDouble(vote_average);
+            parcel.writeString(title);
+            parcel.writeString(poster_path);
+            parcel.writeString(backdrop_path);
+            parcel.writeString(overview);
+            parcel.writeString(release_date);
+            parcel.writeString(String.valueOf(video));
+        }
+
+        public static final Parcelable.Creator<Movie> CREATOR
+                = new Parcelable.Creator<Movie>(){
+
+            @Override
+            public Movie createFromParcel(Parcel parcel) {
+                return new Movie(parcel);
+            }
+
+            @Override
+            public Movie[] newArray(int size) {
+                return new Movie[size];
+            }
+        };
     }
 }

@@ -29,7 +29,7 @@
             android:layout_marginLeft="14dp"
             android:layout_marginStart="14dp"
             android:layout_marginTop="12dp"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:layout_toRightOf="@+id/imageViewMoviePoster"
             android:layout_toEndOf="@+id/imageViewMoviePoster"
             android:text="@string/tv_movie_title" />
@@ -42,13 +42,14 @@
             android:layout_alignStart="@+id/textViewTitleExp"
             android:layout_below="@+id/textViewTitleExp"
             android:layout_marginTop="16dp"
+            android:textColor="@color/white"
             android:maxLines="1"/>
 
         <TextView
             android:id="@+id/textViewReleaseDateExp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:layout_alignLeft="@+id/textViewTitle"
             android:layout_alignStart="@+id/textViewTitle"
             android:layout_below="@+id/textViewTitle"
@@ -63,13 +64,14 @@
             android:layout_alignStart="@+id/textViewReleaseDateExp"
             android:layout_below="@+id/textViewReleaseDateExp"
             android:layout_marginTop="16dp"
+            android:textColor="@color/white"
             android:text="" />
 
         <TextView
             android:id="@+id/textViewUserRatingExp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:layout_alignLeft="@+id/textViewReleaseDate"
             android:layout_alignStart="@+id/textViewReleaseDate"
             android:layout_below="@+id/textViewReleaseDate"
@@ -85,6 +87,7 @@
             android:layout_alignLeft="@+id/textViewUserRatingExp"
             android:layout_alignStart="@+id/textViewUserRatingExp"
             android:src="@drawable/ic_star_black_24dp"
+            android:tint="@color/white"
             android:contentDescription="@string/iv_star_content"/>
 
         <TextView
@@ -96,13 +99,14 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/imageViewStar"
             android:layout_toRightOf="@+id/imageViewStar"
+            android:textColor="@color/white"
             android:text="" />
 
         <TextView
             android:id="@+id/textViewPlotExp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textViewUserRating"
@@ -117,6 +121,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textViewPlotExp"
             android:layout_marginTop="16dp"
+            android:textColor="@color/white"
             android:text="" />
 
 </RelativeLayout>

@@ -1,56 +1,70 @@
 package com.gokdemir.popularmovies;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
+import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
-public class MovieDetailsActivity extends AppCompatActivity {
-    private TextView mMovieTitle;
-    private TextView mMovieReleaseDate;
-    private TextView mMovieVoteAverage;
-    private TextView mMovieOverview;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    //private ImageView mMovieBackdrop; to be used later...
-    private ImageView mMoviePoster;
+public class MovieDetailsActivity extends AppCompatActivity {
+
+    @BindView(R.id.textViewTitle)
+    public TextView mMovieTitle;
+    @BindView(R.id.textViewReleaseDate)
+    public TextView mMovieReleaseDate;
+    @BindView(R.id.textViewUserRating)
+    public TextView mMovieVoteAverage;
+    @BindView(R.id.textViewPlot)
+    public TextView mMovieOverview;
+    @BindView(R.id.imageViewMoviePoster)
+    public ImageView mMoviePoster;
 
     private Context context;
 
     double voteAverage;
 
-    Intent intent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        MovieResults.Movie movie = getIntent().getParcelableExtra(getResources().getString(R.string.movie_key));
 
         context = this;
-        intent = getIntent();
+        this.setTitle(movie.getTitle());
 
-        this.setTitle(intent.getExtras().getString(context.getResources().getString(R.string.movie_title_key)));
-
-        mMovieTitle = findViewById(R.id.textViewTitle);
+        ButterKnife.bind(this);
         mMovieTitle.setMovementMethod(new ScrollingMovementMethod());
-        mMovieReleaseDate = findViewById(R.id.textViewReleaseDate);
-        mMovieVoteAverage = findViewById(R.id.textViewUserRating);
-        mMovieOverview = findViewById(R.id.textViewPlot);
 
-        mMoviePoster = findViewById(R.id.imageViewMoviePoster);
+        voteAverage = movie.getVote_average();
 
-        voteAverage = intent.getDoubleExtra(context.getResources().getString(R.string.movie_vote_average_key), voteAverage);
+        mMovieTitle.setText(movie.getTitle());
+        NetworkUtils.loadImageURL(movie.getPoster_path(), mMoviePoster);
+        mMovieReleaseDate.setText(movie.getRelease_date());
+        mMovieVoteAverage.setText(voteAverage + "/10");
+        mMovieOverview.setText(movie.getOverview());
+    }
 
-        mMovieTitle.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_title_key)));
-        NetworkUtils.loadImageURL(intent.getStringExtra(context.getResources().getString(R.string.movie_poster_key)), mMoviePoster);
-        mMovieReleaseDate.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_release_date_key)));
-        mMovieVoteAverage.setText(String.valueOf(voteAverage) + "/10");
-        mMovieOverview.setText(intent.getStringExtra(context.getResources().getString(R.string.movie_plot_key)));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

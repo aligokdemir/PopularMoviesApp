@@ -25,10 +25,5 @@
     <string name="title_popular_movies_activity">Popular Movies</string>
 
     <!--Keys for movie details-->
-    <string name="movie_backdrop_key">backdropImage</string>
-    <string name="movie_title_key">movieTitle</string>
-    <string name="movie_release_date_key">releaseDate</string>
-    <string name="movie_poster_key">moviePoster</string>
-    <string name="movie_vote_average_key">voteAverage</string>
-    <string name="movie_plot_key">plotSynopsis</string>
+    <string name="movie_key">movieDetails</string>
 </resources>
