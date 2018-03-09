@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         navigationView.bringToFront();
 
