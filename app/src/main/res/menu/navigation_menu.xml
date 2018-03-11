@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/action_popular"
+          android:title="@string/popular_movies_bn"
+          android:icon="@drawable/ic_trending_up_black_24dp"/>
+
+    <item android:id="@+id/action_top_rated"
+          android:title="@string/top_rated_bn"
+          android:icon="@drawable/ic_star_black_24dp" />
+
+    <item android:id="@+id/action_favorites"
+          android:title="@string/my_favorites_bn"
+          android:icon="@drawable/my_favorites" />
+
+    <item android:id="@+id/action_search"
+          android:title="@string/search_bn"
+          android:icon="@drawable/ic_search_black_24dp" />
+
+</menu>

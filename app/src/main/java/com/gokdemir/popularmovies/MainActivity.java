@@ -1,34 +1,33 @@
 package com.gokdemir.popularmovies;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
+
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+
 import android.widget.Toast;
 
+
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
+import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
+import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,16 +44,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     @BindView(R.id.recyclerView)
     public  RecyclerView mRecyclerView;
     @BindView(R.id.navigation)
-    public NavigationView navigationView;
-    @BindView(R.id.drawer)
-    public DrawerLayout mDrawerLayout;
+    public BottomNavigationView bottomNavigationView;
 
     private ProgressDialog progressDialog;
     private MoviesAdapter mAdapter;
     private Context context = this;
     List<MovieResults.Movie> movieList;
     public boolean isMostPopular = true;
-    private ActionBarDrawerToggle mToggle;
+
     Retrofit retrofit;
     private Activity mainActivity;
 
@@ -67,35 +64,33 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.sortByPopular:
-                        if (!isMostPopular) {
+                switch (item.getItemId()){
+                    case R.id.action_favorites:
+                        break;
+                    case R.id.action_popular:
+                        if(!isMostPopular){
                             retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_MOST_POPULAR);
                             isMostPopular = true;
                             mainActivity.setTitle(R.string.title_popular_movies_activity);
                         }
                         return true;
-                    case R.id.sortByTopRated:
-                        if (isMostPopular) {
+                    case R.id.action_top_rated:
+                        if(isMostPopular){
                             retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_TOP_RATED);
                             isMostPopular = false;
                             mainActivity.setTitle(R.string.title_top_rated_activity);
                         }
                         return true;
-                    default:
-                        return false;
+                    case R.id.action_search:
+                        break;
                 }
+                return true;
             }
         });
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(mToggle.onOptionsItemSelected(item)) return true;
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -127,17 +122,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         progressDialog.dismiss();
     }
 
+    @SuppressLint("ResourceAsColor")
     public void initializeActivityElements(){
         mainActivity = this;
 
         ButterKnife.bind(this);
 
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        navigationView.bringToFront();
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mAdapter = new MoviesAdapter(this, this);
@@ -193,4 +184,5 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             }
         });
     }
+
 }

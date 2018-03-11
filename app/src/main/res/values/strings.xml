@@ -24,6 +24,12 @@
     <string name="title_favorites_activity">My Favorite Movies</string>
     <string name="title_popular_movies_activity">Popular Movies</string>
 
+    <!--Bottom Navigation Items-->
+    <string name="popular_movies_bn">Popular</string>
+    <string name="top_rated_bn">Top Rated</string>
+    <string name="my_favorites_bn">Favorites</string>
+    <string name="search_bn">Search</string>
+
     <!--Keys for movie details-->
     <string name="movie_key">movieDetails</string>
 </resources>
