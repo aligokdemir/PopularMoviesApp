@@ -3,6 +3,6 @@
 
     <item android:id="@+id/action_popular" android:title="Popular" android:icon="@drawable/ic_trending_up_black_24dp"/>
     <item android:id="@+id/action_top_rated" android:title="Top Rated" android:icon="@drawable/ic_star_black_24dp" />
-    <item android:id="@+id/action_favorites" android:title="My Favorites" android:icon="@drawable/ic_favorite_black_24dp"/>
+    <item android:id="@+id/action_favorites" android:title="Favorites" android:icon="@drawable/ic_favorite_black_24dp"/>
 
 </menu>
