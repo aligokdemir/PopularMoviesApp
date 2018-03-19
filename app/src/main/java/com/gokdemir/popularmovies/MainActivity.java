@@ -1,33 +1,36 @@
 package com.gokdemir.popularmovies;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.ImageView;
 import android.widget.Toast;
-
 
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
 import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
-import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private Context context = this;
     List<MovieResults.Movie> movieList;
     public boolean isMostPopular = true;
-
+    private ActionBarDrawerToggle mToggle;
     Retrofit retrofit;
     private Activity mainActivity;
 
@@ -84,13 +87,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                             mainActivity.setTitle(R.string.title_top_rated_activity);
                         }
                         return true;
-                    case R.id.action_search:
-                        break;
+
                 }
                 return true;
             }
         });
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)) return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -122,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         progressDialog.dismiss();
     }
 
-    @SuppressLint("ResourceAsColor")
     public void initializeActivityElements(){
         mainActivity = this;
 
@@ -184,5 +190,4 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             }
         });
     }
-
 }

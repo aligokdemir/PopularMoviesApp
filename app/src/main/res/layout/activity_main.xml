@@ -29,7 +29,7 @@
         app:itemBackground="@color/white"
         app:itemIconTint="@color/detail_activity"
         app:itemTextColor="@color/detail_activity"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/bottomnav_menu" />
 
 
 
