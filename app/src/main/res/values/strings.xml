@@ -32,4 +32,7 @@
 
     <!--Keys for movie details-->
     <string name="movie_key">movieDetails</string>
+
+    <!--SharedPref Name-->
+    <string name="shared_pref_name">MoviePrefs</string>
 </resources>
