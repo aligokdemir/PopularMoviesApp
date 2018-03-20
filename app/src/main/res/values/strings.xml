@@ -35,4 +35,8 @@
 
     <!--SharedPref Name-->
     <string name="shared_pref_name">MoviePrefs</string>
+
+    <!--DB Exceptions-->
+    <string name="row_insertion_failed">Failed to insert row into:</string>
+    <string name="unknown_uri_exception">Unknown URI:</string>
 </resources>

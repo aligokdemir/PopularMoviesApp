@@ -129,4 +129,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    public void addMovieToFavorites(){
+
+    }
 }
