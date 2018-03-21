@@ -82,6 +82,16 @@ public class MovieResults {
         private String release_date;
         private List<Integer> genre_ids;
 
+        public Movie(String title, String poster_path, String backdrop_path, String release_date, double vote_average, String overview, int id){
+            this.title = title;
+            this.poster_path = poster_path;
+            this.backdrop_path = backdrop_path;
+            this.release_date = release_date;
+            this.vote_average = vote_average;
+            this.overview = overview;
+            this.id = id;
+        }
+
         public int getVote_count() {
             return vote_count;
         }

@@ -25,8 +25,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     private Context mContext;
     private final MovieClickListener mMovieClickListener;
 
-    private static final String TRANSITION_NAME = "moviePosterTransition";
-
     public MoviesAdapter(Context context, MovieClickListener mMovieClickListener){
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
@@ -54,6 +52,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void onClick(int position);
     }
 
+    public interface MovieOnLongClickListener{
+        void onLongClick(int position);
+    }
+
     @Override
     public int getItemCount() {
         return (mMovieList == null) ? 0 : mMovieList.size();
@@ -63,7 +65,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.mMovieList.clear();
         this.mMovieList.addAll(movieList);
 
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
+    }
+
+    public void removeAt(int position){
+        mMovieList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mMovieList.size());
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener

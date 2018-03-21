@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
+import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
 import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
@@ -53,7 +56,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private MoviesAdapter mAdapter;
     private Context context = this;
     List<MovieResults.Movie> movieList;
+
+    public boolean isFavorite = false;
     public boolean isMostPopular = true;
+
     private ActionBarDrawerToggle mToggle;
     Retrofit retrofit;
     private Activity mainActivity;
@@ -72,6 +78,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_favorites:
+                        isFavorite = true;
+                        isMostPopular = false;
+                        onLoading(1);
+                        loadFavoriteMovies();
+                        onFinishedLoading();
                         break;
                     case R.id.action_popular:
                         if(!isMostPopular){
@@ -81,9 +92,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                         }
                         return true;
                     case R.id.action_top_rated:
-                        if(isMostPopular){
+                        if(isMostPopular || isFavorite){
                             retrofitCall(NetworkUtils.MOVIE_REQUEST_BY_TOP_RATED);
                             isMostPopular = false;
+                            isFavorite = false;
                             mainActivity.setTitle(R.string.title_top_rated_activity);
                         }
                         return true;
@@ -93,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             }
         });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -114,13 +127,19 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         startActivity(movieDetails);
     }
 
-    public void onLoading() {
+
+    public void onLoading(int type) {
         mRecyclerView.setVisibility(View.INVISIBLE);
-        if (isOnline()) {
-            progressDialog.setMessage(context.getResources().getString(R.string.being_fecthed_info));
+        if(type == 0) {
+            if (isOnline()) {
+                progressDialog.setMessage(context.getResources().getString(R.string.being_fecthed_info));
+                progressDialog.show();
+            } else {
+                Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
+            }
+        } else if(type == 1){
+            progressDialog.setMessage(getResources().getString(R.string.favorite_dialog));
             progressDialog.show();
-        } else {
-            Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -172,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 NetworkUtils.LANGUAGE,
                 NetworkUtils.PAGE);
 
-        onLoading();
+        onLoading(0);
 
         call.enqueue(new Callback<MovieResults>() {
             @Override
@@ -190,4 +209,34 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             }
         });
     }
+
+    public void loadFavoriteMovies(){
+        movieList.clear();
+        Cursor cursor = getContentResolver().query(FavoriteMoviesContract.MovieEntry.CONTENT_URI,
+                null, null, null, FavoriteMoviesContract.MovieEntry._ID);
+
+
+        if(cursor != null){
+            while(cursor.moveToNext()) {
+
+                MovieResults.Movie movie = new MovieResults.Movie(
+                        cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_IMAGE)),
+                        cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_BACKDROP)),
+                        cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_RELEASE)),
+                        Double.valueOf(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_RATING))),
+                        cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_PLOT)),
+                        Integer.valueOf(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.MovieEntry.COLUMN_ID)))
+                        );
+
+                movieList.add(movie);
+            }
+            cursor.close();
+        }
+
+
+        Log.v("Size of Favorites:", String.valueOf(movieList.size()));
+        mAdapter.setmMovieList(movieList);
+    }
+
 }

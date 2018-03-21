@@ -3,6 +3,7 @@
 
     <!--Connection related-->
     <string name="being_fecthed_info">The movies are being fetched...</string>
+    <string name="favorite_dialog">Your favorite movies are being brought...</string>
     <string name="check_internet">Check your internet connection!</string>
 
     <!--Detail activity strings-->

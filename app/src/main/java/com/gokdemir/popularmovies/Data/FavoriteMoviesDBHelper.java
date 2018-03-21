@@ -24,6 +24,7 @@ public class FavoriteMoviesDBHelper extends SQLiteOpenHelper {
                 FavoriteMoviesContract.MovieEntry.COLUMN_ID + " TEXT NOT NULL, " +
                 FavoriteMoviesContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoriteMoviesContract.MovieEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
+                FavoriteMoviesContract.MovieEntry.COLUMN_BACKDROP + " TEXT NOT NULL, " +
                 FavoriteMoviesContract.MovieEntry.COLUMN_PLOT + " TEXT NOT NULL, " +
                 FavoriteMoviesContract.MovieEntry.COLUMN_RATING + " TEXT NOT NULL, " +
                 FavoriteMoviesContract.MovieEntry.COLUMN_RELEASE + " TEXT NOT NULL);";

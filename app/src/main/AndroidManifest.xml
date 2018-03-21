@@ -24,6 +24,10 @@
             >
 
         </activity>
+        <provider
+            android:authorities="com.gokdemir.popularmovies"
+            android:name="com.gokdemir.popularmovies.Data.FavoriteMovieContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

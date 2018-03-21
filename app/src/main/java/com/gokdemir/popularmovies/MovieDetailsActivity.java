@@ -1,8 +1,11 @@
 package com.gokdemir.popularmovies;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
@@ -48,13 +52,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     double voteAverage;
     boolean isFavorite;
 
+    private MovieResults.Movie movie;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         setSupportActionBar(toolbar);
 
-        final MovieResults.Movie movie = getIntent().getParcelableExtra(getResources().
+        movie = getIntent().getParcelableExtra(getResources().
                 getString(R.string.movie_key));
 
         SharedPreferences sharedPreferences = getSharedPreferences(getResources()
@@ -90,21 +96,32 @@ public class MovieDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isFavorite){
+                    isFavorite = false;
                     mFloatingAction.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+
+                    //first remove the movie id from shared preferences
                     SharedPreferences.Editor editor = getSharedPreferences(getResources().
                             getString(R.string.shared_pref_name), MODE_PRIVATE).edit();
                     editor.remove(String.valueOf(movie.getId()));
                     editor.apply();
+
+                    //then delete the movie from the favorite movie database...
+                    deleteMovieFromFavorites();
                     Toast.makeText(context, "The movie is removed from favorites!",
                             Toast.LENGTH_SHORT).show();
-                    //remove the movie from database...
-
                 } else{
+                    isFavorite = true;
                     mFloatingAction.setImageResource(R.drawable.ic_favorite_black_24dp);
+
+                    //first add the movie id to the favorites
                     SharedPreferences.Editor editor = getSharedPreferences(getResources().
                             getString(R.string.shared_pref_name), MODE_PRIVATE).edit();
                     editor.putBoolean(String.valueOf(movie.getId()), true);
                     editor.apply();
+
+                    //add the movie to the favorite movie database...
+                    addMovieToFavorites();
+
                     Toast.makeText(context, "The movie is added to favorites!",
                             Toast.LENGTH_SHORT).show();
                     //add the movie to the database...
@@ -131,6 +148,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void addMovieToFavorites(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_ID, movie.getId());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_IMAGE, movie.getPoster_path());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_BACKDROP, movie.getBackdrop_path());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_PLOT, movie.getOverview());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_RATING, movie.getVote_average());
+        contentValues.put(FavoriteMoviesContract.MovieEntry.COLUMN_RELEASE, movie.getRelease_date());
+        getContentResolver().insert(FavoriteMoviesContract.MovieEntry.CONTENT_URI, contentValues);
+    }
 
+    public void deleteMovieFromFavorites(){
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = FavoriteMoviesContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendEncodedPath(String.valueOf(movie.getId())).build();
+        contentResolver.delete(uri, null, null);
     }
 }
