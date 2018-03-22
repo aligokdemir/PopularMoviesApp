@@ -1,6 +1,8 @@
 package com.gokdemir.popularmovies;
 
 import com.gokdemir.popularmovies.Model.MovieResults;
+import com.gokdemir.popularmovies.Model.ReviewResults;
+import com.gokdemir.popularmovies.Model.VideoResults;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -21,7 +23,15 @@ public interface RetrofitInterface {
             @Query("page") int page
     );
 
+    @GET("/3/movie/{id}/reviews")
+    Call<ReviewResults> getReviews(
+            @Path("id") String movieId,
+            @Query("api_key") String apiKey
+    );
 
-
-
+    @GET("/3/movie/{id}/videos")
+    Call<VideoResults> getVideos(
+            @Path("id") String movieId,
+            @Query("api_key") String apiKey
+    );
 }

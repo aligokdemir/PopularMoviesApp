@@ -2,9 +2,11 @@ package com.gokdemir.popularmovies;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 import com.gokdemir.popularmovies.Adapter.MoviesAdapter;
 import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
 import com.gokdemir.popularmovies.Helpers.BottomNavigationViewHelper;
+import com.gokdemir.popularmovies.Helpers.ConnectionChecker;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     @Override
     public void onClick(int position) {
-        if(!isOnline()){
+        if(!ConnectionChecker.isOnline(this)){
             mRecyclerView.setVisibility(View.INVISIBLE);
             Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
             return;
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     public void onLoading(int type) {
         mRecyclerView.setVisibility(View.INVISIBLE);
         if(type == 0) {
-            if (isOnline()) {
+            if (ConnectionChecker.isOnline(this)) {
                 progressDialog.setMessage(context.getResources().getString(R.string.being_fecthed_info));
                 progressDialog.show();
             } else {
@@ -162,12 +165,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         progressDialog = new ProgressDialog(this);
     }
 
-    public boolean isOnline(){
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
 
     public Intent intentPutExtra(Intent movieDetails, int position){
         MovieResults.Movie movie = new MovieResults.Movie(position, movieList);

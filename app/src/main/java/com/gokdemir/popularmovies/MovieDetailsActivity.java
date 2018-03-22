@@ -1,5 +1,6 @@
 package com.gokdemir.popularmovies;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,13 +22,22 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
+import com.gokdemir.popularmovies.Helpers.ConnectionChecker;
 import com.gokdemir.popularmovies.Model.MovieResults;
+import com.gokdemir.popularmovies.Model.ReviewResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.textViewTitle)
@@ -52,13 +62,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
     double voteAverage;
     boolean isFavorite;
 
+    private ProgressDialog progressDialog;
+
     private MovieResults.Movie movie;
+    private List<ReviewResults.Review> reviewList = new ArrayList<>();
+
+    Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         setSupportActionBar(toolbar);
+        progressDialog = new ProgressDialog(this);
 
         movie = getIntent().getParcelableExtra(getResources().
                 getString(R.string.movie_key));
@@ -68,29 +84,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         isFavorite = sharedPreferences.getBoolean(String.valueOf(movie.getId()),
                 Boolean.parseBoolean(null));
 
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
-        collapsingToolbarLayout.setTitle(movie.getTitle());
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-
-        context = this;
-        this.setTitle(movie.getTitle());
+        configureCollapsingToolbar();
 
         ButterKnife.bind(this);
         mMovieTitle.setMovementMethod(new ScrollingMovementMethod());
 
-        if(isFavorite){
-            mFloatingAction.setImageResource(R.drawable.ic_favorite_black_24dp);
-        } else {
-            mFloatingAction.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-        }
+        floatingActionButtonSymbol();
 
-        voteAverage = movie.getVote_average();
-        mMovieTitle.setText(movie.getTitle());
-        NetworkUtils.loadImageURL(movie.getPoster_path(), mMoviePoster);
-        NetworkUtils.loadBackdropURL(movie.getBackdrop_path(), mBackdropImageHeader);
-        mMovieReleaseDate.setText(movie.getRelease_date());
-        mMovieVoteAverage.setText(voteAverage + "/10");
-        mMovieOverview.setText(movie.getOverview());
+        fillUiWithMovieDetails(movie);
 
         mFloatingAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,4 +166,81 @@ public class MovieDetailsActivity extends AppCompatActivity {
         uri = uri.buildUpon().appendEncodedPath(String.valueOf(movie.getId())).build();
         contentResolver.delete(uri, null, null);
     }
+
+    public void floatingActionButtonSymbol(){
+        if(isFavorite){
+            mFloatingAction.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            mFloatingAction.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
+    }
+
+    public void configureCollapsingToolbar(){
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
+        collapsingToolbarLayout.setTitle(movie.getTitle());
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+
+        context = this;
+        this.setTitle(movie.getTitle());
+    }
+
+    public void fillUiWithMovieDetails(MovieResults.Movie movie){
+        voteAverage = movie.getVote_average();
+        mMovieTitle.setText(movie.getTitle());
+        NetworkUtils.loadImageURL(movie.getPoster_path(), mMoviePoster);
+        NetworkUtils.loadBackdropURL(movie.getBackdrop_path(), mBackdropImageHeader);
+        mMovieReleaseDate.setText(movie.getRelease_date());
+        mMovieVoteAverage.setText(voteAverage + "/10");
+        mMovieOverview.setText(movie.getOverview());
+    }
+
+    public void retrofitObtainReviews(MovieResults.Movie movie){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(NetworkUtils.MOVIE_DB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+
+
+        Call<ReviewResults> call = retrofitInterface.getReviews(
+                String.valueOf(movie.getId()),
+                NetworkUtils.TMDB_API_KEY);
+
+        onLoading(0);
+
+        call.enqueue(new Callback<ReviewResults>() {
+            @Override
+            public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
+                ReviewResults results = response.body();
+                reviewList = results.getResults();
+
+                //set the adapter to the review list...
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void retrofitObtainVideos(){
+
+    }
+
+    private void onLoading(int type){
+        if(type == 0) {
+            if (ConnectionChecker.isOnline(this)) {
+                progressDialog.setMessage(context.getResources().getString(R.string.review_movie_progress));
+                progressDialog.show();
+            } else {
+                Toast.makeText(this, context.getResources().getString(R.string.check_internet), Toast.LENGTH_LONG).show();
+            }
+        } else if(type == 1){
+            progressDialog.setMessage(getResources().getString(R.string.favorite_dialog));
+            progressDialog.show();
+        }
+    }
+
 }

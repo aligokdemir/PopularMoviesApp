@@ -19,7 +19,7 @@ public class ReviewResults {
     private int page;
     private int total_pages;
     private int total_results;
-    private List<ResultsBean> results;
+    private List<Review> results;
 
     public int getId() {
         return id;
@@ -53,15 +53,15 @@ public class ReviewResults {
         this.total_results = total_results;
     }
 
-    public List<ResultsBean> getResults() {
+    public List<Review> getResults() {
         return results;
     }
 
-    public void setResults(List<ResultsBean> results) {
+    public void setResults(List<Review> results) {
         this.results = results;
     }
 
-    public static class ResultsBean {
+    public static class Review {
         /**
          * id : 51910979760ee320eb020fc2
          * author : Andres Gomez
