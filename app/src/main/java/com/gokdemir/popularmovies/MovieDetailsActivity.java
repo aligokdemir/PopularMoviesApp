@@ -1,12 +1,15 @@
 package com.gokdemir.popularmovies;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -45,7 +48,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAdapter.ReviewClickListener {
     @BindView(R.id.textViewTitle)
     public TextView mMovieTitle;
     @BindView(R.id.textViewReleaseDate)
@@ -76,9 +79,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     boolean isFavorite;
 
     private ProgressDialog progressDialog;
+    private AlertDialog.Builder reviewDialogBuilder;
 
     private MovieResults.Movie movie;
-    private List<ReviewResults.Review> reviewList = new ArrayList<>();
+    private List<ReviewResults.Review> reviewList = new ArrayList<ReviewResults.Review>();
 
     Retrofit retrofit;
 
@@ -89,6 +93,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(this);
 
+        reviewList = new ArrayList<>();
+
         movie = getIntent().getParcelableExtra(getResources().
                 getString(R.string.movie_key));
 
@@ -96,6 +102,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .getString(R.string.shared_pref_name), MODE_PRIVATE);
         isFavorite = sharedPreferences.getBoolean(String.valueOf(movie.getId()),
                 Boolean.parseBoolean(null));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            reviewDialogBuilder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            reviewDialogBuilder = new AlertDialog.Builder(this);
+        }
 
         configureCollapsingToolbar();
 
@@ -210,6 +222,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mMovieOverview.setText(movie.getOverview());
     }
 
+    @Override
+    public void onClick(int position) {
+        reviewDialogBuilder.setTitle(reviewList.get(position).getAuthor() + " says:");
+        reviewDialogBuilder.setMessage(reviewList.get(position).getContent()).setCancelable(false)
+        .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        }).show();
+    }
+
     public void retrofitObtainReviews(MovieResults.Movie movie){
         retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.MOVIE_DB_URL)
@@ -269,8 +293,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mRecyclerViewReviews.setHasFixedSize(true);
         mLayoutManagerReviews = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewReviews.setLayoutManager(mLayoutManagerReviews);
-        mAdapterReviews = new ReviewsAdapter(reviewList);
+        mAdapterReviews = new ReviewsAdapter(reviewList, this);
         mRecyclerViewReviews.setAdapter(mAdapterReviews);
     }
-
 }

@@ -52,10 +52,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void onClick(int position);
     }
 
-    public interface MovieOnLongClickListener{
-        void onLongClick(int position);
-    }
-
     @Override
     public int getItemCount() {
         return (mMovieList == null) ? 0 : mMovieList.size();

@@ -130,6 +130,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         startActivity(movieDetails);
     }
 
+    public Intent intentPutExtra(Intent movieDetails, int position){
+        MovieResults.Movie movie = new MovieResults.Movie(position, movieList);
+
+        movieDetails.putExtra(getResources().getString(R.string.movie_key), movie);
+
+        return movieDetails;
+    }
 
     public void onLoading(int type) {
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -163,15 +170,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mRecyclerView.setAdapter(mAdapter);
 
         progressDialog = new ProgressDialog(this);
-    }
-
-
-    public Intent intentPutExtra(Intent movieDetails, int position){
-        MovieResults.Movie movie = new MovieResults.Movie(position, movieList);
-
-        movieDetails.putExtra(getResources().getString(R.string.movie_key), movie);
-
-        return movieDetails;
     }
 
     public void retrofitCall(String queryType) {

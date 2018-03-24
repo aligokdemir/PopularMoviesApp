@@ -20,6 +20,7 @@
     <string name="tv_movie_plot">Movie Plot:</string>
     <string name="tv_movie_poster">Movie Poster</string>
     <string name="iv_star_content">Star</string>
+    <string name="dialog_ok">Done</string>
 
     <!--Navigation Drawer-->
     <string name="open">Open</string>
