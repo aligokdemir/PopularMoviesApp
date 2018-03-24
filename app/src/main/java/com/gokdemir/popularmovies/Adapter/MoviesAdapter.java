@@ -68,12 +68,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.notifyDataSetChanged();
     }
 
-    public void removeAt(int position){
-        mMovieList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mMovieList.size());
-    }
-
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         public ImageView imageView;

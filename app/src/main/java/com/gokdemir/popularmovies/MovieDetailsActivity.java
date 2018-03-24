@@ -13,7 +13,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.gokdemir.popularmovies.Adapter.ReviewsAdapter;
 import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
 import com.gokdemir.popularmovies.Helpers.ConnectionChecker;
 import com.gokdemir.popularmovies.Model.MovieResults;
@@ -30,6 +34,8 @@ import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
+
+import com.gokdemir.popularmovies.Model.ReviewResults.Review;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +62,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public Toolbar toolbar;
     @BindView(R.id.favMovie)
     public FloatingActionButton mFloatingAction;
+    @BindView(R.id.recycler_view_reviews)
+    public RecyclerView mRecyclerViewReviews;
+    @BindView(R.id.noReviewsWarning)
+    public TextView mNoReviewFound;
+
+    private RecyclerView.LayoutManager mLayoutManagerReviews;
+    private ReviewsAdapter mAdapterReviews;
 
     private Context context;
 
@@ -88,10 +101,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mMovieTitle.setMovementMethod(new ScrollingMovementMethod());
+        initializeRecyclerViews();
 
         floatingActionButtonSymbol();
 
         fillUiWithMovieDetails(movie);
+
+        retrofitObtainReviews(movie);
 
         mFloatingAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +231,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 ReviewResults results = response.body();
                 reviewList = results.getResults();
 
-                //set the adapter to the review list...
+                if(reviewList.size() != 0)
+                    mAdapterReviews.setmReviewList(reviewList);
+                else
+                    mNoReviewFound.setVisibility(View.VISIBLE);
+
+                progressDialog.dismiss();
+
             }
 
             @Override
@@ -241,6 +263,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
             progressDialog.setMessage(getResources().getString(R.string.favorite_dialog));
             progressDialog.show();
         }
+    }
+
+    private void initializeRecyclerViews(){
+        mRecyclerViewReviews.setHasFixedSize(true);
+        mLayoutManagerReviews = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerViewReviews.setLayoutManager(mLayoutManagerReviews);
+        mAdapterReviews = new ReviewsAdapter(reviewList);
+        mRecyclerViewReviews.setAdapter(mAdapterReviews);
     }
 
 }

@@ -19,7 +19,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imageViewMoviePoster"
@@ -162,7 +162,47 @@
                 app:layout_constraintStart_toStartOf="@+id/textViewPlotExp"
                 app:layout_constraintTop_toBottomOf="@+id/textViewPlotExp" />
 
+            <LinearLayout
+                android:id="@+id/recyclerCarrier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                app:layout_constraintStart_toStartOf="@+id/textViewPlot"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPlot"
+                >
+
+                <TextView
+                    android:id="@+id/reviewsExp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reviews:"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/white"
+                    />
+
+                <TextView
+                    android:id="@+id/noReviewsWarning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_review_found"
+                    android:visibility="invisible"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"></android.support.v7.widget.RecyclerView>
+
+
+            </LinearLayout>
+
         </android.support.constraint.ConstraintLayout>
+
+
+
+
 
     </ScrollView>
 
