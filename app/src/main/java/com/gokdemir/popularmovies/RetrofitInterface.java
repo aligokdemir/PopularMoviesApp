@@ -34,6 +34,4 @@ public interface RetrofitInterface {
             @Path("id") String movieId,
             @Query("api_key") String apiKey
     );
-
-
 }

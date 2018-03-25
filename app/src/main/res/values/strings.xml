@@ -6,6 +6,10 @@
     <string name="no_review_found">No review is found for the movie!</string>
     <string name="no_trailer_found">No trailer is found for the movie!</string>
 
+    <!-- Detail activity explanations-->
+    <string name="reviews_exp">Reviews:</string>
+    <string name="trailers_exp">Videos:</string>
+
     <!--Connection related-->
     <string name="being_fecthed_info">The movies are being fetched...</string>
     <string name="favorite_dialog">Your favorite movies are being brought...</string>

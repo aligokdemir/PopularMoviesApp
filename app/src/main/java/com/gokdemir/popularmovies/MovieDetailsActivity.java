@@ -2,6 +2,7 @@ package com.gokdemir.popularmovies;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,10 +29,12 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.gokdemir.popularmovies.Adapter.ReviewsAdapter;
+import com.gokdemir.popularmovies.Adapter.TrailersAdapter;
 import com.gokdemir.popularmovies.Data.FavoriteMoviesContract;
 import com.gokdemir.popularmovies.Helpers.ConnectionChecker;
 import com.gokdemir.popularmovies.Model.MovieResults;
 import com.gokdemir.popularmovies.Model.ReviewResults;
+import com.gokdemir.popularmovies.Model.VideoResults;
 import com.gokdemir.popularmovies.Utilities.NetworkUtils;
 
 import java.util.ArrayList;
@@ -48,7 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAdapter.ReviewClickListener {
+public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAdapter.ReviewClickListener, TrailersAdapter.TrailerClickListener {
     @BindView(R.id.textViewTitle)
     public TextView mMovieTitle;
     @BindView(R.id.textViewReleaseDate)
@@ -69,9 +72,16 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
     public RecyclerView mRecyclerViewReviews;
     @BindView(R.id.noReviewsWarning)
     public TextView mNoReviewFound;
+    @BindView(R.id.recycler_view_trailers)
+    public RecyclerView mRecyclerViewTrailers;
+    @BindView (R.id.noTrailersWarning)
+    public TextView mNoTrailersFound;
 
     private RecyclerView.LayoutManager mLayoutManagerReviews;
     private ReviewsAdapter mAdapterReviews;
+
+    private RecyclerView.LayoutManager mLayoutManagerTrailers;
+    private TrailersAdapter mAdapterTrailers;
 
     private Context context;
 
@@ -82,7 +92,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
     private AlertDialog.Builder reviewDialogBuilder;
 
     private MovieResults.Movie movie;
-    private List<ReviewResults.Review> reviewList = new ArrayList<ReviewResults.Review>();
+    private List<ReviewResults.Review> reviewList;
+    private List<VideoResults.Video> videoList;
 
     Retrofit retrofit;
 
@@ -91,9 +102,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         setSupportActionBar(toolbar);
-        progressDialog = new ProgressDialog(this);
 
+        progressDialog = new ProgressDialog(this);
         reviewList = new ArrayList<>();
+        videoList = new ArrayList<>();
 
         movie = getIntent().getParcelableExtra(getResources().
                 getString(R.string.movie_key));
@@ -119,6 +131,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
 
         fillUiWithMovieDetails(movie);
 
+        retrofitObtainVideos(movie);
         retrofitObtainReviews(movie);
 
         mFloatingAction.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +171,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
             }
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -234,6 +246,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
         }).show();
     }
 
+    @Override
+    public void onVideoClick(int position) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoList.get(position).getKey()));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(NetworkUtils.generateYoutubeVideoURL(videoList.get(position).getKey())));
+        try{
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException exception){
+            context.startActivity(webIntent);
+        }
+    }
+
     public void retrofitObtainReviews(MovieResults.Movie movie){
         retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.MOVIE_DB_URL)
@@ -271,8 +294,35 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
         });
     }
 
-    public void retrofitObtainVideos(){
+    public void retrofitObtainVideos(MovieResults.Movie movie){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(NetworkUtils.MOVIE_DB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+
+        Call<VideoResults> call = retrofitInterface.getVideos(
+                String.valueOf(movie.getId()),
+                NetworkUtils.TMDB_API_KEY);
+
+        call.enqueue(
+                new Callback<VideoResults>() {
+                    @Override
+                    public void onResponse(Call<VideoResults> call, Response<VideoResults> response) {
+                        VideoResults results = response.body();
+                        videoList = results.getResults();
+
+                        if(videoList.size() != 0)
+                            mAdapterTrailers.setmVideoList(videoList);
+                        else mNoTrailersFound.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onFailure(Call<VideoResults> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+        );
     }
 
     private void onLoading(int type){
@@ -295,5 +345,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
         mRecyclerViewReviews.setLayoutManager(mLayoutManagerReviews);
         mAdapterReviews = new ReviewsAdapter(reviewList, this);
         mRecyclerViewReviews.setAdapter(mAdapterReviews);
+
+        mRecyclerViewTrailers.setHasFixedSize(true);
+        mLayoutManagerTrailers = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerViewTrailers.setLayoutManager(mLayoutManagerTrailers);
+        mAdapterTrailers = new TrailersAdapter(videoList, this);
+        mRecyclerViewTrailers.setAdapter(mAdapterTrailers);
+
     }
 }

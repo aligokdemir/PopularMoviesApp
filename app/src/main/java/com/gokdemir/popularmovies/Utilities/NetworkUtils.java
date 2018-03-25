@@ -21,6 +21,11 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
+    public static final String YOUTUBE_BASE_URL = "www.youtube.com";
+    public static final String YOUTUBE_VIDEO_PATH = "watch";
+    public static final String YOUTUBE_VIDEO_QUERY_PAREMETER = "v";
+
+    public static final String YOUTUBE_TRAILER_IMAGE_URL = "https://img.youtube.com/vi/";
     public static final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String MOVIE_POSTER_SIZE_PATH = "w185";
     public static final String MOVIE_BACKDROP_SIZE_PATH = "w780";
@@ -55,6 +60,27 @@ public class NetworkUtils {
                 .noFade()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);
+    }
+
+    public static void loadTrailerImageURL(String videoKey, ImageView imageView){
+        String imageURL = YOUTUBE_TRAILER_IMAGE_URL + videoKey + "/0.jpg";
+
+        Picasso.with(imageView.getContext())
+                .load(imageURL)
+                .noFade()
+                .placeholder(R.drawable.youtube_placeholder)
+                .into(imageView);
+    }
+
+    public static String generateYoutubeVideoURL(String videoKey){
+        Uri.Builder builder = new Uri.Builder();
+
+        builder.scheme("https")
+                .authority(YOUTUBE_BASE_URL)
+                .appendPath(YOUTUBE_VIDEO_PATH)
+                .appendQueryParameter(YOUTUBE_VIDEO_QUERY_PAREMETER, videoKey);
+
+        return builder.build().toString();
     }
 
 }

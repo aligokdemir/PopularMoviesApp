@@ -40,7 +40,7 @@
                 android:layout_toEndOf="@+id/imageViewMoviePoster"
                 android:layout_toRightOf="@+id/imageViewMoviePoster"
                 android:text="@string/tv_movie_title"
-                android:textColor="@color/white"
+                android:textColor="#F3BE11"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginLeft="8dp" />
@@ -70,7 +70,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/tv_movie_release_date"
-                android:textColor="@color/white"
+                android:textColor="#F3BE11"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
                 android:layout_marginLeft="8dp" />
@@ -100,7 +100,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/tv_movie_user_rating"
-                android:textColor="@color/white"
+                android:textColor="#F3BE11"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate"
                 android:layout_marginLeft="8dp" />
@@ -145,7 +145,7 @@
                 android:layout_below="@+id/textViewUserRating"
                 android:layout_marginTop="8dp"
                 android:text="@string/tv_movie_plot"
-                android:textColor="@color/white"
+                android:textColor="#F3BE11"
                 app:layout_constraintStart_toStartOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/imageViewMoviePoster" />
 
@@ -171,14 +171,38 @@
                 app:layout_constraintStart_toStartOf="@+id/textViewPlot"
                 app:layout_constraintTop_toBottomOf="@+id/textViewPlot"
                 >
+                <TextView
+                    android:id="@+id/trailersExp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trailers_exp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#F3BE11"
+                    />
+
+                <TextView
+                    android:id="@+id/noTrailersWarning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_trailer_found"
+                    android:visibility="invisible"
+                    android:layout_gravity="center"
+                    android:textColor="#F3BE11"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_trailers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+
 
                 <TextView
                     android:id="@+id/reviewsExp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Reviews:"
+                    android:text="@string/reviews_exp"
                     android:layout_marginTop="12dp"
-                    android:textColor="@color/white"
+                    android:textColor="#F3BE11"
                     />
 
                 <TextView
@@ -188,7 +212,7 @@
                     android:text="@string/no_review_found"
                     android:visibility="invisible"
                     android:layout_gravity="center"
-                    android:textColor="@color/white"/>
+                    android:textColor="#F3BE11"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_reviews"

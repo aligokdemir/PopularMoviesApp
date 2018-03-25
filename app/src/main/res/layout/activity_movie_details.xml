@@ -68,7 +68,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:backgroundTint="#FFFF00"
+        android:backgroundTint="#F3BE11"
         android:src="@drawable/ic_favorite_border_black_24dp"
         android:layout_margin="16dp" />
 
