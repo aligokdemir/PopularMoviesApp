@@ -32,6 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                app:navigationIcon="?attr/homeAsUpIndicator"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <ImageView
@@ -68,7 +70,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:backgroundTint="#F3BE11"
+        android:backgroundTint="@color/orange_ish"
         android:src="@drawable/ic_favorite_border_black_24dp"
         android:layout_margin="16dp" />
 

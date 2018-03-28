@@ -40,7 +40,7 @@
                 android:layout_toEndOf="@+id/imageViewMoviePoster"
                 android:layout_toRightOf="@+id/imageViewMoviePoster"
                 android:text="@string/tv_movie_title"
-                android:textColor="#F3BE11"
+                android:textColor="@color/orange_ish"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginLeft="8dp" />
@@ -70,7 +70,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/tv_movie_release_date"
-                android:textColor="#F3BE11"
+                android:textColor="@color/orange_ish"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
                 android:layout_marginLeft="8dp" />
@@ -100,7 +100,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/tv_movie_user_rating"
-                android:textColor="#F3BE11"
+                android:textColor="@color/orange_ish"
                 app:layout_constraintStart_toEndOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate"
                 android:layout_marginLeft="8dp" />
@@ -145,7 +145,7 @@
                 android:layout_below="@+id/textViewUserRating"
                 android:layout_marginTop="8dp"
                 android:text="@string/tv_movie_plot"
-                android:textColor="#F3BE11"
+                android:textColor="@color/orange_ish"
                 app:layout_constraintStart_toStartOf="@+id/imageViewMoviePoster"
                 app:layout_constraintTop_toBottomOf="@+id/imageViewMoviePoster" />
 
@@ -177,7 +177,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/trailers_exp"
                     android:layout_marginTop="12dp"
-                    android:textColor="#F3BE11"
+                    android:textColor="@color/orange_ish"
                     />
 
                 <TextView
@@ -187,7 +187,7 @@
                     android:text="@string/no_trailer_found"
                     android:visibility="invisible"
                     android:layout_gravity="center"
-                    android:textColor="#F3BE11"/>
+                    android:textColor="@color/orange_ish"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_trailers"
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/reviews_exp"
                     android:layout_marginTop="12dp"
-                    android:textColor="#F3BE11"
+                    android:textColor="@color/orange_ish"
                     />
 
                 <TextView
@@ -212,7 +212,7 @@
                     android:text="@string/no_review_found"
                     android:visibility="invisible"
                     android:layout_gravity="center"
-                    android:textColor="#F3BE11"/>
+                    android:textColor="@color/orange_ish"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_reviews"

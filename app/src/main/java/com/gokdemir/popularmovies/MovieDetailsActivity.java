@@ -151,6 +151,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements ReviewsAd
                     deleteMovieFromFavorites();
                     Toast.makeText(context, "The movie is removed from favorites!",
                             Toast.LENGTH_SHORT).show();
+                    Intent goBackToMain = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(goBackToMain); // deleting complete go back to main...
                 } else{
                     isFavorite = true;
                     mFloatingAction.setImageResource(R.drawable.ic_favorite_black_24dp);

@@ -68,7 +68,7 @@ public class NetworkUtils {
         Picasso.with(imageView.getContext())
                 .load(imageURL)
                 .noFade()
-                .placeholder(R.drawable.youtube_placeholder)
+                .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);
     }
 
