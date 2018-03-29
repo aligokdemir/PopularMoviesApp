@@ -1,17 +1,43 @@
 ## Popular Movies App
 
-An application developed for learning purposes during Android Nanodegree Program. This application makes use of [TMDB API](https://www.themoviedb.org/documentation/api) and shows the user two categories of movies for now. 
+An application developed for learning purposes during Android Nanodegree Program. This application makes use of [TMDB API](https://www.themoviedb.org/documentation/api) and shows the user two categories. 
 
 1. Most popular movies on TMDB
 2. Top rated movies on TMDB
+3. The ones user put in favorites.
 
-While displaying this content, app uses [Retrofit2](http://square.github.io/retrofit/) to make request and uses "GsonConverterFactory" in order to model the data. In the opening screen of the app, you can see a Grid View applied in a Recycler View consisting of movies' posters and when clicked, it takes you to the detail activity about the movie. The movies' posters are fetched using [Picasso](http://square.github.io/picasso/) library which is a powerful tool to retrieve and cache images. When displaying the options that user can choose to see either Popular or Top Rated movies, "Navigation View" and "Drawer Layout" is used to make transition and user experience better.
+### Used Libraries
+1. Retrofit2
+2. GsonConverterFactory
+3. ButterKnife
+4. Picasso 
 
-### Future work to be implemented:
-1. Retrieve trailer and also comments from the API and display them in MovieDetailsActivity.
-2. Shared element transition between activities
-3. Search feature for users to look for the movies they like
-4. Collapsing toolbar for a better UI
-5. Implement "favorites" feature that allows users to save movies using SharedPreferences and SQLite
+### Screenshots from the Application
 
-###### To use the application, insert your API KEY inside the NetworkUtils class in the variable called TMDB_API_KEY.
+<p align="center">
+  <img src="https://github.com/aligokdemir/PopularMoviesApp/blob/master/Screenshots/PM%20Pop%20Movies.png" width="300"/>
+  <img src="https://github.com/aligokdemir/PopularMoviesApp/blob/master/Screenshots/PM%20Movie%20Details%20Activituy.png" width="300"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/aligokdemir/PopularMoviesApp/blob/master/Screenshots/PM%20Trailers%20and%20Comments.png" width="300"/>
+  <img src="https://github.com/aligokdemir/PopularMoviesApp/blob/master/Screenshots/PM%20Add%20To%20Favorites.png" width="300/>
+</p>
+
+###### To use the application, insert your API KEY inside the gradle file.
+
+## License
+
+Copyright 2018 Ali Gökdemir
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
